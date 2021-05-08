@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Golden Ratio</title>
+    <style>
+      * {
+        flex-shrink: 0;
+      }
+      .box {
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="box" class="box"></div>
+    <script>
+      const PHI = (1 + Math.sqrt(5)) / 2;
+      const parentBOX = document.getElementById("box");
+
+      function randomColor() {
+        return Math.floor(Math.random() * 16777215).toString(16);
+      }
+
+      const creatChildBox = (height, width, previous, prePrevious) => {
+        const parentEle = document.createElement("div");
+        const ele = document.createElement("div");
+        ele.className = "child-box";
+        ele.style.width = width + "px";
+        ele.style.height = height + "px";
+        ele.style.backgroundColor = "#" + randomColor();
+        parentEle.style.display = "flex";
+        parentEle.style.flexDirection = "row";
+
+        parentEle.appendChild(ele);
+        if (previous) {
+          const preParent = document.createElement("div");
+          preParent.style.display = "flex";
+          preParent.style.flexDirection = "column";
+
+          function createBruhBox(size) {
+            const preEle = document.createElement("div");
+            preEle.className = "child-box";
+            preEle.style.width = size.a + "px";
+            preEle.style.height = size.b + "px";
+            preEle.style.backgroundColor = "#" + randomColor();
+            return preEle;
+          }
+          preParent.appendChild(createBruhBox(previousBox));
+          if (prePrevious) {
+            preParent.appendChild(createBruhBox(prePrevious));
+          }
+
+          parentEle.appendChild(preParent);
+        }
+        parentBOX.appendChild(parentEle);
+      };
+
+      function getGoldenRatio(number) {
+        const ratio = number / PHI;
+        return {
+          a: number,
+          b: ratio,
+          sum: number + ratio,
+        };
+      }
+
+      const isGoldenRatio = (a, b) => {
+        return a / b === PHI;
+      };
+
+      let recurr = 20;
+      let currentSum = 1;
+      let previousBox = null;
+      let prePrevious = null;
+      for (let index = 0; index < recurr; index++) {
+        const { a, b, sum } = getGoldenRatio(currentSum);
+        currentSum = sum;
+
+        creatChildBox(b, a, previousBox, prePrevious);
+        prePrevious = previousBox;
+        previousBox = { a, b };
+
+        // a > b ? console.log(createBox(a, b)) : console.log(createBox(b, a))
+      }
+    </script>
+  </body>
+</html>

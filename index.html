@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Golden Ratio</title>
+    <style>
+      * {
+        /* CSS BRUH :| */
+        flex-shrink: 0;
+      }
+      .box {
+        display: flex;
+        flex-direction: column;
+      }
+      .inputholder {
+        margin: 10px;
+      }
+      .inputholder input {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="inputholder">
+      <strong>Prefer staying limit of 20 as It will got really big :)</strong>
+      <input
+        placeholder="DEPTH Level. (DEFAULT: 15)"
+        type="number"
+        id="input"
+      />
+      <button id="submit">Generate</button>
+    </div>
+    <div class="box" id="box"></div>
+    <script>
+      /*
+        This code is not well documented. I'll do it ASAP! 
+        */
+
+      // Functions from Index.js :P
+      // --------
+      const PHI = (1 + Math.sqrt(5)) / 2;
+      const isGoldenRatio = (a, b) => a / b === PHI;
+      const getGoldenRatio = (number) => {
+        const ratio = number / PHI;
+        return {
+          width: number,
+          height: ratio,
+          sum: number + ratio,
+        };
+      };
+      // --------
+      /* UTILS */
+      const randomColor = () =>
+        Math.floor(Math.random() * 16777215).toString(16);
+      // -------
+      const CONTAINER = document.getElementById("box");
+
+      function generateGoldenBox(DEPTH) {
+        //   Emptying the container:)
+        CONTAINER.innerHTML = "";
+        const createBox = (height, width) => {
+          const ele = document.createElement("div");
+          ele.className = "child-box";
+          ele.style.width = width + "px";
+          ele.style.height = height + "px";
+          ele.style.backgroundColor = "#" + randomColor();
+          return ele;
+        };
+
+        const createContainer = (isRow) => {
+          const container = document.createElement("div");
+          container.style.display = "flex";
+          container.style.flexDirection = isRow ? "row" : "column";
+          return container;
+        };
+
+        let previousSum = 1;
+        let ArrayOfVALUES = [];
+        for (let i = 0; i < DEPTH; i++) {
+          const ratio = getGoldenRatio(previousSum);
+          ArrayOfVALUES.unshift(ratio);
+          previousSum = ratio.sum;
+        }
+
+        const recur = (i = 0, bruh) => {
+          const container = createContainer(true);
+          const value = ArrayOfVALUES[i];
+          const nextValue = ArrayOfVALUES[i + 1];
+          if (!value) return container;
+
+          /**
+           * Why am I using width twice?
+           *
+           * Since golden ratio rectangle is made from combination of
+           * a) Square of side which is longest. ex. 1 and 0.618... We will take 1 as the side for square
+           * b) and a rectangle of width 0.618 and height 1.
+           *
+           * for reference look at this image:- https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/SimilarGoldenRectangles.svg/330px-SimilarGoldenRectangles.svg.png
+           * In the image, "a" is the width and "b" is the height here (in our code).
+           */
+          const box1 = createBox(value.width, value.width);
+
+          const box2 = createBox(nextValue?.width, value.height);
+          const secondContainer = createContainer();
+
+          secondContainer.appendChild(box2);
+          secondContainer.appendChild(recur(i + 2, !bruh));
+          container.appendChild(box1);
+          container.appendChild(secondContainer);
+          return container;
+        };
+
+        CONTAINER.appendChild(recur(0, true));
+      }
+
+      const DEPTH = 15; // Depth to Go
+      const input = document.getElementById("input");
+      const submit = document.getElementById("submit");
+
+      submit.addEventListener("click", () => {
+        generateGoldenBox(input.value);
+      });
+      generateGoldenBox(DEPTH);
+    </script>
+  </body>
+</html>
