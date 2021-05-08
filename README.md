@@ -1,6 +1,6 @@
 # Golden Ratio Algorithm
 
-![Algorithm](TODO)
+![Algorithm](https://cdn.statically.io/gh/PiyushSuthar/golden-ratio-algorithm/main/screenshot.png)
 
 [Try the App](https://piyushsuthar.github.io/golden-ratio-algorithm)
 
